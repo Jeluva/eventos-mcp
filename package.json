@@ -5,7 +5,8 @@
   "description": "MCP personal para buscar eventos en Luma, Meetup, otraplanes y whatido sin pagar nada",
   "scripts": {
     "start": "node src/server.ts",
-    "check": "node src/check.ts"
+    "check": "node src/check.ts",
+    "test": "node src/prueba-estado.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",

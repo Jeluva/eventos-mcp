@@ -16,7 +16,13 @@ filtra por texto (palabras cortas exactas, largas por prefijo y sin plural), fec
 
 - `npm run check`: prueba todas las fuentes, sale con código 1 si alguna falla.
 - Ciudad: variable `EVENTOS_CIUDAD` (por defecto Buenos Aires).
-- Tools: `buscar_eventos(texto, desde, hasta, gratis, barrio, fuentes, max)` y `estado_fuentes()`.
+- Tools: `buscar_eventos(texto, desde, hasta, gratis, barrio, fuentes, max, solo_nuevos)` y `estado_fuentes()`.
+- `solo_nuevos` (por defecto `false`): con `true` devuelve solo los eventos que no devolvió una búsqueda anterior,
+  así cada día ves lo nuevo sin releer todo. Cada evento trae `nuevo: true|false`. Se marca como visto lo que se
+  devuelve, no lo que quedó afuera por `max`. Los ids viven en un JSON fuera del repo (`%LOCALAPPDATA%/eventos-mcp/vistos.json`
+  en Windows, `~/.eventos-mcp/vistos.json` en el resto; variable `EVENTOS_ESTADO` para cambiar la ruta). Se escribe
+  de forma atómica, si falta o está roto se arranca de cero, y se borran los eventos que ya pasaron o con más de 60 días.
+- `npm test`: prueba el estado y `solo_nuevos` con un archivo temporal (hace una búsqueda real, dos veces).
 - Sin `texto` la primera llamada tarda unos 12 s por el barrido de Luma (después queda en caché 10 min) y el
   cupo de resultados se reparte entre fuentes para que otraplanes no tape a las demás.
 - Luma y otraplanes devuelven 429 si se las golpea en ráfaga; uso personal y a baja frecuencia.
