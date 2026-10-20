@@ -6,8 +6,11 @@ import { luma } from "./sources/luma.ts";
 import { meetup } from "./sources/meetup.ts";
 import { otraplanes } from "./sources/otraplanes.ts";
 import { whatido } from "./sources/whatido.ts";
+import { whatsapp } from "./sources/whatsapp.ts";
 
-export const FUENTES: Fuente[] = [luma, meetup, otraplanes, whatido];
+// whatsapp va primero (si está prendida) para que, cuando un evento también sale en Luma o Meetup, el repetido
+// que sobreviva diga en qué grupo se compartió.
+export const FUENTES: Fuente[] = [...(whatsapp ? [whatsapp] : []), luma, meetup, otraplanes, whatido];
 
 const HEALTH = join(dirname(fileURLToPath(import.meta.url)), "..", "data", "health.json");
 

@@ -9,7 +9,7 @@ const server = new McpServer({ name: "eventos", version: "0.1.0" });
 
 server.tool(
   "buscar_eventos",
-  `Busca eventos en ${CIUDAD} en Luma, Meetup, otraplanes y whatido. Devuelve ordenados por fecha, sin repetidos, cada uno con nuevo: true|false.`,
+  `Busca eventos en ${CIUDAD} en ${FUENTES.map((f) => f.nombre).join(", ")}. Devuelve ordenados por fecha, sin repetidos, cada uno con nuevo: true|false.`,
   {
     texto: z.string().optional().describe("palabra clave, ej: ia, startups, surf"),
     desde: z.string().optional().describe("YYYY-MM-DD, por defecto hoy"),

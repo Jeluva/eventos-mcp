@@ -8,6 +8,7 @@ MCP personal para buscar eventos en Buenos Aires sin pagar nada. Corre en tu PC 
 | Meetup | GraphQL `POST /gql2` (`recommendedEvents` / `eventSearch`) por ventanas de días | `__APOLLO_STATE__` de la página de búsqueda | ~110 |
 | otraplanes | `/api/plans` con cursor, `q` para texto | sin respaldo HTML (la web es una SPA vacía) | ~1500 |
 | whatido | Supabase con la clave anónima leída del bundle JS | la misma clave cacheada en el código | ~180 |
+| whatsapp (opcional, apagada) | links de eventos compartidos en tus grupos, leídos de la base de whatsapp-mcp-ts | ninguno | depende de tus grupos |
 
 Cada fuente es una lista de estrategias que se prueban en orden. Si una falla o viene vacía se pasa a la siguiente,
 y el resultado queda en `data/health.json` (tool `estado_fuentes`). Para sumar un respaldo, agregá otra
@@ -26,6 +27,22 @@ filtra por texto (palabras cortas exactas, largas por prefijo y sin plural), fec
 - Sin `texto` la primera llamada tarda unos 12 s por el barrido de Luma (después queda en caché 10 min) y el
   cupo de resultados se reparte entre fuentes para que otraplanes no tape a las demás.
 - Luma y otraplanes devuelven 429 si se las golpea en ráfaga; uso personal y a baja frecuencia.
+
+## Fuente opcional: grupos de WhatsApp
+
+Trae los eventos que alguien compartió en tus grupos de WhatsApp (links de Luma, Meetup, Eventbrite, Partiful o
+Sympla). No se conecta a WhatsApp: lee en solo lectura la base SQLite de
+[whatsapp-mcp-ts](https://github.com/jlucaso1/whatsapp-mcp-ts), que tiene que estar instalado y guardando los
+mensajes de grupos. Viene apagada; se prende pasando la ruta de la base al registrar el MCP:
+
+    claude mcp add eventos -s user -e EVENTOS_CIUDAD="Buenos Aires" -e EVENTOS_WHATSAPP_DB=/ruta/a/whatsapp-mcp-ts/data/whatsapp.db -- node /ruta/a/eventos-mcp/src/server.ts
+
+- `EVENTOS_WHATSAPP_DIAS`: cuántos días de mensajes mirar (por defecto 30).
+- `EVENTOS_WHATSAPP_GRUPOS`: nombres de grupo separados por coma para limitarlo a esos (por defecto todos).
+- Título, fecha y lugar salen del JSON-LD de cada página; lo leído queda en `data/whatsapp-links.json` (3 días si
+  encontró evento, 1 si no). Los eventos escritos solo en texto, sin link, no entran.
+- Cuando el mismo evento también sale en Luma o Meetup, gana el de WhatsApp y su descripción dice en qué grupos se
+  compartió.
 
 ## Instalación
 
